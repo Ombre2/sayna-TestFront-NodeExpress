@@ -42,9 +42,8 @@ exports.login = async (req, res) => {
 				});
 				return;
 			}else{
-				console.log("Temp ecooller");
 				//update tentative (nombre = 0 )
-				await db.collection("tentatives").doc(tentative.id).update({nombre : 0});
+				let updateTentative = await db.collection("tentatives").doc(tentative.id).update({nombre : 0});
 				canLogin= true;
 			}
 		 	// res.send({resultat: (tentative.tentative.nombre > 3 && new Date(tentative.tentative.expiredAt).getTime() < new Date().getTime()) });
