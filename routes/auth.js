@@ -25,8 +25,6 @@ router.put('/user/modifPassword/:token',checkTokenMiddleware.checkTokenMiddlewar
 router.get('/users/:token',checkTokenMiddleware.checkTokenMiddleware, auth.getAllUsers);
 
 //route de deconnexion de l'utilisateur
-router.delete('/users/:token',checkTokenMiddleware.checkTokenMiddleware, function(req, res) {
-  res.send('Example route register');
-});
+router.delete('/users/:token',checkTokenMiddleware.checkTokenMiddleware, auth.deleteToken);
 
 module.exports = router;
