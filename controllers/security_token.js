@@ -15,7 +15,8 @@ exports.checkTokenMiddleware = (req, res, next) => {
 	// Présence d'un token
 	if (!token) {
 		return res.status(401).json({
-			message: 'Error. Unauthorized'
+			error: true,
+			message: 'Le token envoyer n\'est pas conforme'
 		})
 	}
 
@@ -23,7 +24,8 @@ exports.checkTokenMiddleware = (req, res, next) => {
 	jwt.verify(req.params.token, SECRET_ACCESS_TOKEN, (err, decodedToken) => {
 		if (err) {
 			res.status(401).json({
-				message: 'Error. Bad token'
+				error: true,
+				message: 'Le token envoyer n\'existe pas'
 			})
 		} else {
 			return next()

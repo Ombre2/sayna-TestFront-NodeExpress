@@ -169,16 +169,14 @@ exports.getOneUser = async (req, res) => {
 		    	// console.log(doc.id, ' => ', doc.data());
 			})
 		});
-		console.log(userId);
-	await db.collection("users").doc(userId)
-		.get().then((querySnapshot) => {
-		     querySnapshot.forEach((doc) => {
-		     	res.status(200).send({
-					error: false,
-					user: doc.data()
-				});
-		    	// console.log(doc.id, ' => ', doc.data());
-			})
+	let doc = await db.collection("users").doc(userId).get();
+	if (!doc.exists) {
+	  console.log('No such document!');
+	} else {
+	    res.status(200).send({
+			error: false,
+			user: doc.data()
 		});
+	}
 
 }
