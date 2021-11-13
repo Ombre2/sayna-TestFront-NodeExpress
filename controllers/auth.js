@@ -202,7 +202,7 @@ exports.updateUser = async (req, res)=>{
 
 	let updateUser = await db.collection("users").doc(userId).update(body);
 
-	if(updateUser.id){
+	if(updateUser){
 		 res.status(200).send({
 			error: false,
 			message: "L'utilisateur a été modifié"
