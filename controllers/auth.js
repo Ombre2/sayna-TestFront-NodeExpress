@@ -42,6 +42,7 @@ exports.login = async (req, res) => {
 				});
 				return;
 			}else{
+				console.log("Temp ecooller");
 				//update tentative (nombre = 0 )
 				await db.collection("tentatives").doc(tentative.id).update({nombre : 0});
 				canLogin= true;
