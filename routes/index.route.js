@@ -4,7 +4,7 @@ var auth = require("./auth");
 module.exports = app => {
 
   app.get('/', function(req,res){
-    res.render('index.html');
+    res.render('index', { title: 'index.html', message: 'index.html' });
   });
 
   //all route declared here
