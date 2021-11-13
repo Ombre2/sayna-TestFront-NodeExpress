@@ -27,5 +27,13 @@ app.use((req, res, next) => {
    res.render('404', { title: '404', message: '404 not found' });
 })
 
+app.use(function (req, res, next) {
+    if (req.session.views) {
+        req.session.views++
+    } else {
+        req.session.views = 1
+    }
+})
+
 module.exports = app;
    
