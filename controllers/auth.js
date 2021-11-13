@@ -31,11 +31,11 @@ exports.login = async (req, res) => {
 			})
 
 			console.log("hahaha " , moment().format() + " +1 hours " +moment(moment().add(1, 'hours')).format()); 
-			console.log("hahaha ", moment().max(tentative.tentative.expiredAt)); 
+			console.log("hahaha ", moment(tentative.tentative.expiredAt).isBefore(moment().format())); 
 
 		let canLogin = false;
 		if(tentative.tentative.nombre > 3){
-			if(moment().max(tentative.tentative.expiredAt)){
+			if(!moment(tentative.tentative.expiredAt).isBefore(moment().format())){
 				res.status(409).send({
 					error: true,
 					message: "Trop de tentative sur l'email " + datas.Email + " - Veillez pantientez dans 1h"
