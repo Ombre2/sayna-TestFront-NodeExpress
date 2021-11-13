@@ -1,7 +1,15 @@
 const express = require('express')
 const app = express()
-var path = require('path');
-var cookieParser = require('cookie-parser');
+var path = require('path')
+var cookieParser = require('cookie-parser')
+var session = require('express-session')
+
+app.use(session({
+    secret: 'keyboard cat',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { maxAge: 3000 }
+}))
 
 
 app.set('views', './view')
