@@ -7,6 +7,8 @@ const SECRET_REFRESH_TOKEN = 'testSaynaRefresh'
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
+var moment = require('moment'); // require
+
 exports.login = async (req, res) => {
 	let datas = req.body;
 	// Validate request
@@ -28,7 +30,7 @@ exports.login = async (req, res) => {
 				})
 			})
 
-			console.log("hahaha ",new Date(tentative.tentative.expiredAt) > new Date()); 
+			console.log("hahaha ",moment().format()); 
 			console.log("hahaha ",new Date(tentative.tentative.expiredAt) +" "+ new Date()); 
 
 		let canLogin = false;
@@ -113,7 +115,7 @@ exports.login = async (req, res) => {
 						});
 					} else {
 						//update tentative (nombre =  (tentative.tentative.nombre+1 et expiredAt(new Date() + 1h )))
-						let updateTentative = await db.collection("tentatives").doc(tentative.id).update({nombre : (tentative.tentative.nombre+1) , expiredAt: new Date().setHours(1)});
+						let updateTentative = await db.collection("tentatives").doc(tentative.id).update({nombre : (tentative.tentative.nombre+1) , expiredAt: new Date(new Date().setHours(1)).toISOString()});
 
 						res.status(401).send({
 							error: true,
@@ -124,7 +126,7 @@ exports.login = async (req, res) => {
 			} else {
 
 				//update tentative (nombre =  (tentative.tentative.nombre+1 et expiredAt(new Date() + 1h )))
-				let updateTentative = await db.collection("tentatives").doc(tentative.id).update({nombre : (tentative.tentative.nombre+1), expiredAt: new Date().setHours(1)});
+				let updateTentative = await db.collection("tentatives").doc(tentative.id).update({nombre : (tentative.tentative.nombre+1), expiredAt: new Date(new Date().setHours(1)).toISOString()});
 
 				res.status(401).send({
 					error: true,
@@ -214,7 +216,7 @@ exports.register = async (req, res) => {
 				const addToken = await db.collection('tokens').add({ userId: result.id, token: token_access, refresh_token: token_refresh,createdAt : new Date().toISOString() });
 
 				//creer collection tentative login avec conditiion (Tentive +1 si le login est érroné)
-				const addTentative = await db.collection('tentatives').add({ userId: result.id, email: req.body.Email, nombre: 0 , expiredAt: new Date() });
+				const addTentative = await db.collection('tentatives').add({ userId: result.id, email: req.body.Email, nombre: 0 , expiredAt: new Date().toISOString() });
 
 				res.status(200).send({
 					error: false,
