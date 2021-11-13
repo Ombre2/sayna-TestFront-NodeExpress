@@ -192,6 +192,15 @@ exports.updateUser = async (req, res)=>{
 	let body = req.body;
 	let token = req.params.token;
 	let userId = "";
+
+	if(!body.firstname && !body.lastname && !body.date_naissance && !body.sexe ){
+ 		res.status(401).send({
+			error: true,
+			message: "Aucun données n'a été envoyés"
+		});
+		return;
+	}
+	
 	await db.collection("tokens")
 		.where('token', '==', token)
 		.get().then((querySnapshot) => {
