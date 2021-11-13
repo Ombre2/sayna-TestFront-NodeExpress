@@ -10,7 +10,7 @@ const saltRounds = 10;
 exports.login = async (req, res) => {
 	let datas = req.body;
 	// Validate request
-	if (!req.body.Email && !req.body.Password) {
+	if (!req.body.Email || !req.body.Password) {
 		res.status(401).send({
 			error: true,
 			message: "L'Email/Password est manquant"
