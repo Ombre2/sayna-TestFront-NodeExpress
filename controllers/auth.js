@@ -200,7 +200,7 @@ exports.updateUser = async (req, res)=>{
 		});
 		return;
 	}
-	
+
 	await db.collection("tokens")
 		.where('token', '==', token)
 		.get().then((querySnapshot) => {
@@ -217,6 +217,41 @@ exports.updateUser = async (req, res)=>{
 			message: "L'utilisateur a été modifié"
 		});
 	}
-    
+}
 
+exports.updatePassword = async (req, res)=>{
+	let body = req.body;
+	let token = req.params.token;
+	let userId = "";
+
+	if(!body.Password){
+ 		res.status(401).send({
+			error: true,
+			message: "Aucun données n'a été envoyés"
+		});
+		return;
+	}
+
+	bcrypt.genSalt(saltRounds, function (err, salt) {
+		bcrypt.hash(body.Password, salt,async function (err, hash) {
+			await db.collection("tokens")
+				.where('token', '==', token)
+				.get().then((querySnapshot) => {
+				     querySnapshot.forEach((doc) => {
+				     	userId = doc.data().userId;
+					})
+				});
+
+			let updateUser = await db.collection("users").doc(userId).update({Password: hash});
+
+			if(updateUser){
+				 res.status(200).send({
+					error: false,
+					message: "Le mot de passe de l'utilisateur a été modifié"
+				});
+			}
+		});
+	});
+
+	
 }

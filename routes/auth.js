@@ -19,9 +19,7 @@ router.get('/user/:token', checkTokenMiddleware.checkTokenMiddleware, auth.getOn
 router.put('/user/:token',checkTokenMiddleware.checkTokenMiddleware, auth.updateUser);
 
 //route de modification de password de l'utilisateur
-router.put('/user/modifPassword/:token',checkTokenMiddleware.checkTokenMiddleware, function(req, res) {
-  res.send('Example route register');
-});
+router.put('/user/modifPassword/:token',checkTokenMiddleware.checkTokenMiddleware, auth.updatePassword);
 
 //route de recuperation des utilisateurs
 router.get('/users/:token',checkTokenMiddleware.checkTokenMiddleware, function(req, res) {
