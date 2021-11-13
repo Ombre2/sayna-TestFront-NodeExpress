@@ -166,7 +166,6 @@ exports.getOneUser = async (req, res) => {
 		.get().then((querySnapshot) => {
 		     querySnapshot.forEach((doc) => {
 		     	userId = doc.data().userId;
-		    	// console.log(doc.id, ' => ', doc.data());
 			})
 		});
 
@@ -186,5 +185,29 @@ exports.getOneUser = async (req, res) => {
 			} 
 		});
 	}
+
+}
+
+exports.updateUser = async (req, res)=>{
+	let body = req.body;
+	let token = req.params.token;
+	let userId = "";
+	await db.collection("tokens")
+		.where('token', '==', token)
+		.get().then((querySnapshot) => {
+		     querySnapshot.forEach((doc) => {
+		     	userId = doc.data().userId;
+			})
+		});
+
+	let updateUser = await db.collection("users").doc(userId).update(body);
+
+	if(updateUser.id){
+		 res.status(200).send({
+			error: false,
+			message: "L'utilisateur a été modifié"
+		});
+	}
+    
 
 }

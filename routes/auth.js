@@ -16,9 +16,7 @@ router.post('/register', auth.register);
 router.get('/user/:token', checkTokenMiddleware.checkTokenMiddleware, auth.getOneUser);
 
 //route de modification de l'utilisateur
-router.put('/user/:token',checkTokenMiddleware.checkTokenMiddleware, function(req, res) {
-  res.send('Example route register'); 
-});
+router.put('/user/:token',checkTokenMiddleware.checkTokenMiddleware, auth.updateUser);
 
 //route de modification de password de l'utilisateur
 router.put('/user/modifPassword/:token',checkTokenMiddleware.checkTokenMiddleware, function(req, res) {
