@@ -282,7 +282,7 @@ exports.deleteToken = async (req,res)=>{
 		     	id = doc.id;
 			})
 		 })     
-	    let response = await db.collection('token').doc(id).delete();
+	    let response = await db.collection('tokens').doc(id).delete();
 	    if(response){  
 			 res.status(200).send({
 				error: false,
