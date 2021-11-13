@@ -43,8 +43,8 @@ exports.login = async (req, res) => {
 				return;
 			}else{
 				//update tentative (nombre = 0 )
-				let updateTentative = await db.collection("tentatives").doc(tentative.id).update({nombre : 0});
-				console.log("dededb",updateTentative);
+				// let updateTentative = await db.collection("tentatives").doc(tentative.id).update({nombre : 0});
+				// console.log("dededb",updateTentative);
 				canLogin= true;
 			}
 		 	// res.send({resultat: (tentative.tentative.nombre > 3 && new Date(tentative.tentative.expiredAt).getTime() < new Date().getTime()) });
