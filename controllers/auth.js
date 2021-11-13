@@ -30,8 +30,6 @@ exports.login = async (req, res) => {
 				     	isUser = doc.id;
 					})
 				});
-				    	console.log("datan jed",data[0]);
-
 			if(data.length==1){    
 				bcrypt.compare(datas.Password, data[0].Password, async (err, result)=> {
 					if(result){
