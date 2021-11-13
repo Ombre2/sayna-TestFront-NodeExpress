@@ -15,4 +15,8 @@ module.exports = app => {
   //   if (!req.route) {res.render("pageNotFound.html");}
   //   next();
   // });
+  app.get('*', function (req, res) {
+    res.render('pageNotFound.html');
+  })
+
 };
