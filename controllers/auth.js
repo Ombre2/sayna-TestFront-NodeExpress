@@ -280,12 +280,13 @@ exports.deleteToken = async (req,res)=>{
 		.then((querySnapshot) => {
 		     querySnapshot.forEach((doc) => {
 		     	id = doc.id;
-			});     
-	    const response = await db.collection('token').doc(id).delete();
+			})
+		 })     
+	    let response = await db.collection('token').doc(id).delete();
 	    if(response){  
-		 res.status(200).send({
-			error: false,
-			message: "L'utilisateur a bien été déconnecté avec succès"
-		});
-	}
+			 res.status(200).send({
+				error: false,
+				message: "L'utilisateur a bien été déconnecté avec succès"
+			});
+		}
 }
