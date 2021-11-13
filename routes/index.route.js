@@ -11,8 +11,8 @@ module.exports = app => {
   app.use('/api', auth);
 
   //si le route n'existe plus
-  app.use(function(req, res, next) {
-    if (!req.route) {res.render("pageNotFound.html");}
-    next();
-  });
+  // app.use(function(req, res, next) {
+  //   if (!req.route) {res.render("pageNotFound.html");}
+  //   next();
+  // });
 };
