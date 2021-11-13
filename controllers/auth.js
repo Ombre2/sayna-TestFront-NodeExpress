@@ -262,5 +262,9 @@ exports.getAllUsers = async (req,req)=>{
 		     	data.push(doc.data());
 			})
 		});
-	res.status(200).send(data);
+		console.log(data);
+	res.status(200).send({
+		error: false,
+		users: data
+	});
 }
