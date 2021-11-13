@@ -44,6 +44,7 @@ exports.login = async (req, res) => {
 			}else{
 				//update tentative (nombre = 0 )
 				let updateTentative = await db.collection("tentatives").doc(tentative.id).update({nombre : 0});
+				console.log(updateTentative);
 				canLogin= true;
 			}
 		 	// res.send({resultat: (tentative.tentative.nombre > 3 && new Date(tentative.tentative.expiredAt).getTime() < new Date().getTime()) });
@@ -218,7 +219,7 @@ exports.register = async (req, res) => {
 				const addToken = await db.collection('tokens').add({ userId: result.id, token: token_access, refresh_token: token_refresh,createdAt : moment().format() });
 
 				//creer collection tentative login avec conditiion (Tentive +1 si le login est érroné)
-				const addTentative = await db.collection('tentatives').add({ userId: result.id, email: req.body.Email, nombre: 0 , expiredAt: moment().format() });
+				const addTentative = await db.collection('tentatives').add({ email: req.body.Email, nombre: 0 , expiredAt: moment().format() });
 
 				res.status(200).send({
 					error: false,
