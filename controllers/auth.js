@@ -254,7 +254,7 @@ exports.updatePassword = async (req, res)=>{
 	});	
 }
 
-exports.getAllUsers = async (req,req)=>{
+exports.getAllUsers = async (req,res)=>{
 	let data = [];
 	await db.collection("users")
 		.get().then((querySnapshot) => {
