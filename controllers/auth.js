@@ -259,7 +259,12 @@ exports.getAllUsers = async (req,res)=>{
 	await db.collection("users")
 		.get().then((querySnapshot) => {
 		     querySnapshot.forEach((doc) => {
-		     	data.push(doc.data());
+		     	data.push({
+		     		firstname: doc.data().firstname,
+					lastname: doc.data().lastname,
+					email: doc.data().Email,
+					sexe: doc.data().sexe,
+		     	});
 			})
 		});
 		console.log(data);
