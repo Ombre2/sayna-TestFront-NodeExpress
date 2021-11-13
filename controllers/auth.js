@@ -279,7 +279,7 @@ exports.deleteToken = async (req,res)=>{
 	  console.log('No such document!');
 	} else {
 	    console.log("teokenDb.id =>", tokenDb.id);
-	    const response = await db.collection('token').doc(tokenDb.doc().token).delete();
+	    const response = await db.collection('token').doc(tokenDb.id).delete();
 	    if(response){
 		 res.status(200).send({
 			error: false,
