@@ -90,7 +90,7 @@ exports.login = async (req, res) => {
 	} catch (e) {
 		res.status(500).send({
 			error: true,
-			message: "Internal server error"
+			message: "Internal server error" + JSON.stringify(e)
 		});
 	}
 }
