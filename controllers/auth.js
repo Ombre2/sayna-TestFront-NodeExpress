@@ -274,17 +274,18 @@ exports.getAllUsers = async (req,res)=>{
 }
 
 exports.deleteToken = async (req,res)=>{
-	const tokenDb = await db.collection('tokens').where('token','==',req.params.token).get();    
-	if (!tokenDb.exists) {
-	  console.log('No such document!');
-	} else {
-	    console.log("teokenDb.id =>", tokenDb.id);
-	    const response = await db.collection('token').doc(tokenDb.id).delete();
+	let id = "";
+	await db.collection('tokens').where('token','==',req.params.token)
+		.get()
+		.then((querySnapshot) => {
+		     querySnapshot.forEach((doc) => {
+		     	id = doc.id;
+			});   
+	    const response = await db.collection('token').doc(id).delete();
 	    if(response){
 		 res.status(200).send({
 			error: false,
 			message: "L'utilisateur a bien été déconnecté avec succès"
 		});
-	}
 	}
 }
