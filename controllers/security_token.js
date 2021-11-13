@@ -26,7 +26,7 @@ exports.checkTokenMiddleware = async (req, res, next) => {
 		.get()
 		.then((querySnapshot) => {
 		     querySnapshot.forEach((doc) => {
-		     	tokenDb.push(doc.token);
+		     	tokenDb.push(doc.data());
 			})
 		 }) 
 	if(tokenDb.length>=1){
