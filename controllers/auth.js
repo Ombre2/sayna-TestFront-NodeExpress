@@ -31,6 +31,8 @@ exports.login = async (req, res) => {
 		if (data.length == 1) {
 			bcrypt.compare(datas.Password, data[0].Password, async (err, result) => {
 				if (result) {
+
+					//creation de access_token
 					const token_access = jwt.sign({
 						id: idUser,
 						email: data.Email,
@@ -38,6 +40,7 @@ exports.login = async (req, res) => {
 				        expiresIn: "2h",
 				    })
 
+					//creation de refresh_token
 					const token_refresh = jwt.sign({
 						id: idUser,
 						email: data.Email,
@@ -58,10 +61,10 @@ exports.login = async (req, res) => {
 
 					if (tokens.length >= 1) {
 						//Update token
-						await db.collection('tokens').doc(tokens[0].id).update({ token: token_access });
+						await db.collection('tokens').doc(tokens[0].id).update({ token: token_access, refresh_token: token_refresh });
 					} else {
 						//creer colllection pour le token avec IdUser et token
-						await db.collection('tokens').add({ userId: idUser, token: token_access });
+						await db.collection('tokens').add({ userId: idUser, token: token_access, refresh_token: token_refresh });
 					}
 					res.status(200).send({
 						error: false,
@@ -155,16 +158,20 @@ exports.register = async (req, res) => {
 				const token_access = jwt.sign({
 					id: result.id,
 					email: req.body.Email,
-				}, SECRET_ACCESS_TOKEN)
+				}, SECRET_ACCESS_TOKEN,{
+				    expiresIn: "2h",
+				})
 
 				//creation de refresh_token
 				const token_refresh = jwt.sign({
 					id: result.id,
 					email: req.body.Email,
-				}, SECRET_REFRESH_TOKEN)
+				}, SECRET_REFRESH_TOKEN,{
+				    expiresIn: "2h",
+				})
 
 				//creer colllection pour le token avec IdUser et token
-				const addToken = await db.collection('tokens').add({ userId: result.id, token: token_access });
+				const addToken = await db.collection('tokens').add({ userId: result.id, token: token_access, refresh_token: token_refresh });
 
 				res.status(200).send({
 					error: false,
