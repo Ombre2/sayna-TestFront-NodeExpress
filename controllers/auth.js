@@ -274,7 +274,7 @@ exports.getAllUsers = async (req,res)=>{
 }
 
 exports.deleteToken = async (req,res)=>{
-	const delete_ = await db.collection('tokens').where("token","==",req.params.token).delete();
+	const delete_ = await db.collection('tokens').where('token','==',req.params.token).delete();
 	if(delete_){
 		 res.status(200).send({
 			error: false,
