@@ -28,8 +28,8 @@ exports.login = async (req, res) => {
 				})
 			})
 
-			console.log("hahaha ",new Date(tentative.tentative.expiredAt).getTime() > new Date().toISOString().getTime()); 
-			console.log("hahaha ",tentative.tentative.expiredAt +" "+ new Date().toISOString()); 
+			console.log("hahaha ",new Date(tentative.tentative.expiredAt).getTime() > new Date().getTime()); 
+			console.log("hahaha ",tentative.tentative.expiredAt +" "+ new Date()); 
 
 		let canLogin = false;
 		if(tentative.tentative.nombre > 3){
