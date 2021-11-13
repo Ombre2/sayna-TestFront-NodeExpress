@@ -34,16 +34,16 @@ exports.login = async (req, res) => {
 					const token_access = jwt.sign({
 						id: idUser,
 						email: data.Email,
-					}, SECRET_ACCESS_TOKEN,
-				      {
-				        expiresIn: "2s",
-				      })
-
+					}, SECRET_ACCESS_TOKEN,{
+				        expiresIn: "2h",
+				    })
 
 					const token_refresh = jwt.sign({
 						id: idUser,
 						email: data.Email,
-					}, SECRET_REFRESH_TOKEN)
+					}, SECRET_REFRESH_TOKEN,{
+				        expiresIn: "2h",
+				    })
 
 					let tokens = [];
 					//Tester si l'utilisateur a déjà un token dans le BD
