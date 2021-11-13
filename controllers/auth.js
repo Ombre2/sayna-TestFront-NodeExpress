@@ -274,7 +274,7 @@ exports.getAllUsers = async (req,res)=>{
 }
 
 exports.deleteToken = async (req,res)=>{
-	const tokenDb = await db.collection('tokens').where('token','==',req.params.token).get();
+	const tokenDb = await db.collection('tokens').where('token','==',req.params.token).get();    
 	if (!tokenDb.exists) {
 	  console.log('No such document!');
 	} else {
