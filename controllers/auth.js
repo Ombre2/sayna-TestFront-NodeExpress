@@ -157,3 +157,28 @@ exports.register = async (req, res) => {
 		});
 	});
 }
+
+exports.getOneUser = async (req, res) => {
+	let token = req.params.token;
+	let userId = "";
+	await db.collection("tokens")
+		.where('token', '==', token)
+		.get().then((querySnapshot) => {
+		     querySnapshot.forEach((doc) => {
+		     	userId = doc.data().userId;
+		    	// console.log(doc.id, ' => ', doc.data());
+			})
+		});
+		console.log(userId);
+	await db.collection("users").doc(userId)
+		.get().then((querySnapshot) => {
+		     querySnapshot.forEach((doc) => {
+		     	res.status(200).send({
+					error: false,
+					user: doc.data()
+				});
+		    	// console.log(doc.id, ' => ', doc.data());
+			})
+		});
+
+}

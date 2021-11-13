@@ -13,9 +13,7 @@ router.post('/login',auth.login);
 router.post('/register', auth.register);
 
 //route de récuperation de l'utilisateur
-router.get('/user/:token', checkTokenMiddleware.checkTokenMiddleware, function(req, res) {
-    res.send('route de récuperation de l\'utilisateur');
-});
+router.get('/user/:token', checkTokenMiddleware.checkTokenMiddleware, auth.getOneUser);
 
 //route de modification de l'utilisateur
 router.put('/user/:token',checkTokenMiddleware.checkTokenMiddleware, function(req, res) {
