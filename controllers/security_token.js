@@ -7,8 +7,8 @@ const SECRET_ACCESS_TOKEN = 'testSayna'
 
 /* Vérification du token */
 exports.checkTokenMiddleware = async (req, res, next) => {
+	
 	// Récupération du token
-
 	let token = true;
 	if (!req.params.token) {
 		token = false;
