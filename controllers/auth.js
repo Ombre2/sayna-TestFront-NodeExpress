@@ -20,38 +20,10 @@ exports.login = async (req, res) => {
 		return;
 	}
 	try {
-		//Prend le nombre de tentative d'un email
-		let tentative = {};
-		await db.collection('tentatives').where('email', '==', datas.Email)
-			.get()
-			.then((querySnapshot) => {
-				querySnapshot.forEach((doc) => {
-					tentative = {id: doc.id, tentative: doc.data()};
-				})
-			})
+		
 
-			console.log("hahaha " , moment().format() + " +1 hours " +moment(moment().add(1, 'hours')).format()); 
-			console.log("hahaha ", moment(tentative.tentative.expiredAt).isBefore(moment().format())); 
-
-		let canLogin = false;
-		if(tentative.tentative.nombre > 3){
-			if(!moment(tentative.tentative.expiredAt).isBefore(moment().format())){
-				res.status(409).send({
-					error: true,
-					message: "Trop de tentative sur l'email " + datas.Email + " - Veillez pantientez dans 1h"
-				});
-				return;
-			}else{
-				//update tentative (nombre = 0 )
-				// let updateTentative = await db.collection("tentatives").doc(tentative.id).update({nombre : 0});
-				// console.log("dededb",updateTentative);
-				canLogin= true;
-			}
-		 	// res.send({resultat: (tentative.tentative.nombre > 3 && new Date(tentative.tentative.expiredAt).getTime() < new Date().getTime()) });
-		}else{
-			canLogin= true;
-		}
-		if(canLogin){
+		
+		
 			let data = [];
 			let idUser = "";
 			await db.collection("users")
@@ -63,69 +35,98 @@ exports.login = async (req, res) => {
 					})
 				});
 			if (data.length == 1) {
+				//Prend le nombre de tentative d'un email
+				let tentative = {};
+				await db.collection('tentatives').where('email', '==', datas.Email)
+					.get()
+					.then((querySnapshot) => {
+						querySnapshot.forEach((doc) => {
+							tentative = {id: doc.id, tentative: doc.data()};
+						})
+					})
 
-				bcrypt.compare(datas.Password, data[0].Password, async (err, result) => {
-					if (result) {
-
-						//creation de access_token
-						const token_access = jwt.sign({
-							id: idUser,
-							email: data.Email,
-						}, SECRET_ACCESS_TOKEN,{
-					        expiresIn: "2h",
-					    })
-
-						//creation de refresh_token
-						const token_refresh = jwt.sign({
-							id: idUser,
-							email: data.Email,
-						}, SECRET_REFRESH_TOKEN,{
-					        expiresIn: "2h",
-					    })  
-
-						let tokens = [];
-						//Tester si l'utilisateur a déjà un token dans le BD
-						await db.collection('tokens').where('userId', '==', idUser)
-							.get()
-							.then((querySnapshot) => {
-								querySnapshot.forEach((doc) => {
-									tokens.push({ id: doc.id, data: doc.data() });
-								})
-							})
-
-
-						if (tokens.length >= 1) {
-							//Update token
-							await db.collection('tokens').doc(tokens[0].id).update({ token: token_access, refresh_token: token_refresh, createdAt : moment().format() });
-						} else {
-							//creer colllection pour le token avec IdUser et token
-							await db.collection('tokens').add({ userId: idUser, token: token_access, refresh_token: token_refresh, createdAt : moment().format() });
+					let canLogin = false;
+					if(tentative.tentative.nombre > 3){
+						if(!moment(tentative.tentative.expiredAt).isBefore(moment().format())){
+							res.status(409).send({
+								error: true,
+								message: "Trop de tentative sur l'email " + datas.Email + " - Veillez pantientez dans 1h"
+							});
+							return;
+						}else{
+							//update tentative (nombre = 0 )
+							// let updateTentative = await db.collection("tentatives").doc(tentative.id).update({nombre : 0});
+							// console.log("dededb",updateTentative);
+							canLogin= true;
 						}
+					 	// res.send({resultat: (tentative.tentative.nombre > 3 && new Date(tentative.tentative.expiredAt).getTime() < new Date().getTime()) });
+					}else{
+						canLogin= true;
+					}
+					if(canLogin){
+						bcrypt.compare(datas.Password, data[0].Password, async (err, result) => {
+							if (result) {
 
-						console.log("tentative.id =>", tentative.id)
+								//creation de access_token
+								const token_access = jwt.sign({
+									id: idUser,
+									email: data.Email,
+								}, SECRET_ACCESS_TOKEN,{
+							        expiresIn: "2h",
+							    })
 
-						//update tentative (nombre = 0 )
-						let updateTentative = await db.collection("tentatives").doc(tentative.id).update({nombre : 0});
+								//creation de refresh_token
+								const token_refresh = jwt.sign({
+									id: idUser,
+									email: data.Email,
+								}, SECRET_REFRESH_TOKEN,{
+							        expiresIn: "2h",
+							    })  
 
-						res.status(200).send({
-							error: false,
-							message: "L\'utilisateur a été authentifié avec succèes",
-							token: {
-								'token': token_access,
-								'refresh-token': token_refresh,
-								'createdAt':  moment().format()
+								let tokens = [];
+								//Tester si l'utilisateur a déjà un token dans le BD
+								await db.collection('tokens').where('userId', '==', idUser)
+									.get()
+									.then((querySnapshot) => {
+										querySnapshot.forEach((doc) => {
+											tokens.push({ id: doc.id, data: doc.data() });
+										})
+									})
+
+
+								if (tokens.length >= 1) {
+									//Update token
+									await db.collection('tokens').doc(tokens[0].id).update({ token: token_access, refresh_token: token_refresh, createdAt : moment().format() });
+								} else {
+									//creer colllection pour le token avec IdUser et token
+									await db.collection('tokens').add({ userId: idUser, token: token_access, refresh_token: token_refresh, createdAt : moment().format() });
+								}
+
+								console.log("tentative.id =>", tentative.id)
+
+								//update tentative (nombre = 0 )
+								let updateTentative = await db.collection("tentatives").doc(tentative.id).update({nombre : 0});
+
+								res.status(200).send({
+									error: false,
+									message: "L\'utilisateur a été authentifié avec succèes",
+									token: {
+										'token': token_access,
+										'refresh-token': token_refresh,
+										'createdAt':  moment().format()
+									}
+								});
+							} else {
+								//update tentative (nombre =  (tentative.tentative.nombre+1 et expiredAt(new Date() + 1h )))
+								// let updateTentative = await db.collection("tentatives").doc(tentative.id).update({nombre : (tentative.tentative.nombre+1) , expiredAt: moment(moment().add(1, 'hours')).format()});
+
+								res.status(401).send({
+									error: true,
+									message: "Votre Email/Password est erroné"
+								});
 							}
 						});
-					} else {
-						//update tentative (nombre =  (tentative.tentative.nombre+1 et expiredAt(new Date() + 1h )))
-						// let updateTentative = await db.collection("tentatives").doc(tentative.id).update({nombre : (tentative.tentative.nombre+1) , expiredAt: moment(moment().add(1, 'hours')).format()});
-
-						res.status(401).send({
-							error: true,
-							message: "Votre Email/Password est erroné"
-						});
 					}
-				});
 			} else {
 
 				//update tentative (nombre =  (tentative.tentative.nombre+1 et expiredAt(new Date() + 1h )))
@@ -137,7 +138,7 @@ exports.login = async (req, res) => {
 				});
 			}
 
-		}
+		
 	} catch (e) {
 		res.status(500).send({
 			error: true,
