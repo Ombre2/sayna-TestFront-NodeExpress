@@ -142,7 +142,7 @@ exports.register = async (req, res) => {
 				Password: hash,
 				date_naissance: req.body.date_naissance,
 				sexe: req.body.sexe,
-			    createdAt : new Date()
+			    createdAt : new Date().toISOString()
 			}
 			try {
 				// Add a new document with a generated id.
