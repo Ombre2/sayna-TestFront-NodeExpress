@@ -10,10 +10,7 @@ app.use(express.urlencoded({ extended: false }));
 // app.use(cookieParser());
 
 app.use((req, res, next) => {
- res.status(404).send({
- status: 404,
- error: 'Not found'
- })
+   res.render('pageNotFound.html');
 })
 
 

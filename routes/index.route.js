@@ -3,10 +3,6 @@ var auth = require("./auth");
 
 module.exports = app => {
 
-  app.get('*', function (req, res) {
-    res.render('pageNotFound.html');
-  }) 
-
   app.get('/', function(req,res){
     res.render('index.html');
   });
