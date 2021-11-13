@@ -28,7 +28,7 @@ exports.login = async (req, res) => {
 				})
 			})
 
-			console.log("hahaha ",new Date(tentative.tentative.expiredAt).getTime() > new Date().getTime()); 
+			console.log("hahaha ",new Date(tentative.tentative.expiredAt) > new Date()); 
 			console.log("hahaha ",new Date(tentative.tentative.expiredAt).getTime() +" "+ new Date().getTime()); 
 
 		let canLogin = false;
