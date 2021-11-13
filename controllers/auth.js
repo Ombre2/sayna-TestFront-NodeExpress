@@ -139,6 +139,9 @@ exports.register = async (req, res) => {
               email: req.body.Email,
             }, SECRET_REFRESH_TOKEN)
 
+			//creer colllection pour le token avec IdUser et token
+			const addToken = await db.collection('users').add({userId: result.id,token: token_access });
+
 			res.status(200).send({
 				error: false,
 				message: "L\'utilisateur a été authentifié avec succèes",
