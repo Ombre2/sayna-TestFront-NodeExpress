@@ -27,23 +27,40 @@ exports.login = async (req, res) => {
 				.get().then((querySnapshot) => {
 				     querySnapshot.forEach((doc) => {
 				     	data.push(doc.data());
-				     	isUser = doc.id;
+				     	idUser = doc.id;
 					})
 				});
 			if(data.length==1){    
 				bcrypt.compare(datas.Password, data[0].Password, async (err, result)=> {
 					if(result){
 						const token_access = jwt.sign({
-			              id: isUser,
+			              id: idUser,
 			              email: data.Email,
 			            }, SECRET_ACCESS_TOKEN)
 
  
 						const token_refresh = jwt.sign({
-			              id: isUser,
+			              id: idUser,
 			              email: data.Email,
 			            }, SECRET_REFRESH_TOKEN)
 
+						let tokens = [];
+						//Tester si l'utilisateur a déjà un token dans le BD
+						await db.collection('tokens').where('userId','==',idUser)
+								.get()
+								.then((querySnapshot) => {
+								     querySnapshot.forEach((doc) => {
+								     	tokens.push({id: doc.id, data: doc.data()});
+									})
+								 }) 
+
+						if(tokens.length>=1){
+							//Update token
+							await db.collection('tokens').doc(tokens[0].id).update({token: token_access });
+						}else{
+							 //creer colllection pour le token avec IdUser et token
+							await db.collection('tokens').add({userId: idUser,token: token_access });
+						}
 						res.status(200).send({
 							error: false,
 							message: "L\'utilisateur a été authentifié avec succèes",
