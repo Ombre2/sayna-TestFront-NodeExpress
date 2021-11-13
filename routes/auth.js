@@ -22,9 +22,7 @@ router.put('/user/:token',checkTokenMiddleware.checkTokenMiddleware, auth.update
 router.put('/user/modifPassword/:token',checkTokenMiddleware.checkTokenMiddleware, auth.updatePassword);
 
 //route de recuperation des utilisateurs
-router.get('/users/:token',checkTokenMiddleware.checkTokenMiddleware, function(req, res) {
-  res.send('Example route register');
-});
+router.get('/users/:token',checkTokenMiddleware.checkTokenMiddleware, auth.getAllUsers);
 
 //route de deconnexion de l'utilisateur
 router.delete('/users/:token',checkTokenMiddleware.checkTokenMiddleware, function(req, res) {

@@ -251,7 +251,16 @@ exports.updatePassword = async (req, res)=>{
 				});
 			}
 		});
-	});
+	});	
+}
 
-	
+exports.getAllUsers = async (req,req)=>{
+	let data = [];
+	await db.collection("users")
+		.get().then((querySnapshot) => {
+		     querySnapshot.forEach((doc) => {
+		     	data.push(doc.data());
+			})
+		});
+	res.status(200).send(data);
 }
