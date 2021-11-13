@@ -13,12 +13,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 // app.use(cookieParser());
 
+require('./routes/index.route')(app);
+
 app.use((req, res, next) => {
    res.render('404', { title: '404', message: '404 not found' });
 })
-
-
-require('./routes/index.route')(app);
 
 module.exports = app;
    
