@@ -40,7 +40,6 @@ exports.checkTokenMiddleware = async (req, res, next) => {
 				return next()
 			}
 		})
-		return next()
 	}else{
 		res.status(401).json({
 			error: true,
