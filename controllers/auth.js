@@ -28,6 +28,8 @@ exports.login = async (req, res) => {
 				})
 			})
 
+			console.log("hahaha ", (new Date(tentative.tentative.expiredAt).getTime() < new Date().getTime()) + " now = " +new Date().getTime());
+
 		if(tentative.tentative.nombre > 3 && (new Date(tentative.tentative.expiredAt).getTime() < new Date().getTime())){
 			res.status(409).send({
 				error: true,
