@@ -20,7 +20,7 @@ exports.login = async (req, res) => {
 	try {
 		//Prend le nombre de tentative d'un email
 		let tentative = {};
-		await db.collection('tentatives').where('Email', '==', datas.Email)
+		await db.collection('tentatives').where('email', '==', datas.Email)
 			.get()
 			.then((querySnapshot) => {
 				querySnapshot.forEach((doc) => {
