@@ -27,8 +27,8 @@ exports.login = async (req, res) => {
 					tentative = {id: doc.id, tentative: doc.data()};
 				})
 			})
-		console.log("TEST =>",(new Date(tentative.tentative.expiredAt).toISOString() > new Date().toISOString()))
-		if(tentative.tentative.nombre > 3 && (new Date(tentative.tentative.expiredAt).toISOString() > new Date().toISOString())){
+		console.log("TEST =>",(new Date(tentative.tentative.expiredAt).getTime() > new Date().toISOString().getTime()))
+		if(tentative.tentative.nombre > 3 && (new Date(tentative.tentative.expiredAt).toISOString().getTime() > new Date().toISOString().getTime())){
 
 		}else{
 			let data = [];
