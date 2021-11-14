@@ -30,13 +30,22 @@ exports.login = async (req, res) => {
 
 			console.log("hahaha ", (new Date(tentative.tentative.expiredAt).getTime() > new Date().getTime()) + " now = " +new Date().getTime());
 
-		if(tentative.tentative.nombre > 3 && (new Date(tentative.tentative.expiredAt).getTime() > new Date().getTime())){
-			res.status(409).send({
-				error: true,
-				message: "Trop de tentative sur l'email " + datas.Email + " - Veillez pantientez dans 1h"
-			});
+		let canLogin = false;
+		if(tentative.tentative.nombre > 3){
+			if(new Date(tentative.tentative.expiredAt).getTime() > new Date().getTime()){
+				res.status(409).send({
+					error: true,
+					message: "Trop de tentative sur l'email " + datas.Email + " - Veillez pantientez dans 1h"
+				});
+				return;
+			}else{
+				canLogin= true;
+			}
 		 	// res.send({resultat: (tentative.tentative.nombre > 3 && new Date(tentative.tentative.expiredAt).getTime() < new Date().getTime()) });
 		}else{
+			canLogin= true;
+		}
+		if(canLogin){
 			let data = [];
 			let idUser = "";
 			await db.collection("users")
@@ -103,7 +112,7 @@ exports.login = async (req, res) => {
 						});
 					} else {
 						//update tentative (nombre =  (tentative.tentative.nombre+1 et expiredAt(new Date() + 1h )))
-						let updateTentative = await db.collection("tentatives").doc(tentative.id).update({nombre : (tentative.tentative.nombre+1) , expiredAt: new Date(new Date().setHours(4)).toISOString()});
+						let updateTentative = await db.collection("tentatives").doc(tentative.id).update({nombre : (tentative.tentative.nombre+1) , expiredAt: new Date(new Date().setHours(1)).toISOString()});
 
 						res.status(401).send({
 							error: true,
@@ -114,7 +123,7 @@ exports.login = async (req, res) => {
 			} else {
 
 				//update tentative (nombre =  (tentative.tentative.nombre+1 et expiredAt(new Date() + 1h )))
-				let updateTentative = await db.collection("tentatives").doc(tentative.id).update({nombre : (tentative.tentative.nombre+1), expiredAt: new Date(new Date().setHours(4)).toISOString()});
+				let updateTentative = await db.collection("tentatives").doc(tentative.id).update({nombre : (tentative.tentative.nombre+1), expiredAt: new Date(new Date().setHours(1)).toISOString()});
 
 				res.status(401).send({
 					error: true,
