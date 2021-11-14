@@ -30,7 +30,7 @@ exports.login = async (req, res) => {
 			console.log("tentative =>",tentative);
 			// res.send({resultat: (new Date(tentative.tentative.expiredAt).getTime() > new Date().getTime()) });
 		console.log("TEST =>",(new Date(tentative.tentative.expiredAt).getTime() > new Date().getTime()))
-		if(tentative.tentative.nombre > 3 && (new Date(tentative.tentative.expiredAt).getTime() > new Date().getTime())){
+		if(tentative.tentative.nombre > 3 && (new Date(tentative.tentative.expiredAt).getTime() < new Date().getTime())){
 		 res.send({resultat: (tentative.tentative.nombre > 3 && new Date(tentative.tentative.expiredAt).getTime() > new Date().getTime()) });
 
 		}else{
