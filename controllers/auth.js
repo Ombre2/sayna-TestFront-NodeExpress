@@ -27,12 +27,12 @@ exports.login = async (req, res) => {
 					tentative = {id: doc.id, tentative: doc.data()};
 				})
 			})
-			console.log("tentative =>",tentative);
-			// res.send({resultat: (new Date(tentative.tentative.expiredAt).getTime() > new Date().getTime()) });
-		console.log("TEST =>",(new Date(tentative.tentative.expiredAt).getTime() > new Date().getTime()))
 		if(tentative.tentative.nombre > 3 && (new Date(tentative.tentative.expiredAt).getTime() < new Date().getTime())){
-		 res.send({resultat: (tentative.tentative.nombre > 3 && new Date(tentative.tentative.expiredAt).getTime() > new Date().getTime()) });
-
+			res.status(409).send({
+				error: true,
+				message: "Trop de tentative sur l'email "+data.Email+" - Veillez pantientez dans 1h"
+			});
+		 	// res.send({resultat: (tentative.tentative.nombre > 3 && new Date(tentative.tentative.expiredAt).getTime() < new Date().getTime()) });
 		}else{
 			let data = [];
 			let idUser = "";
@@ -83,6 +83,10 @@ exports.login = async (req, res) => {
 							//creer colllection pour le token avec IdUser et token
 							await db.collection('tokens').add({ userId: idUser, token: token_access, refresh_token: token_refresh, createdAt : new Date().toISOString() });
 						}
+
+						//update tentative (nombre = 0 )
+						let updateTentative = await db.collection("tentative").doc(tentative.id).update({nombre : 0});
+
 						res.status(200).send({
 							error: false,
 							message: "L\'utilisateur a été authentifié avec succèes",
@@ -93,6 +97,9 @@ exports.login = async (req, res) => {
 							}
 						});
 					} else {
+						//update tentative (nombre =  (tentative.tentative.nombre+1 et expiredAt(new Date() + 1h )))
+						let updateTentative = await db.collection("tentative").doc(tentative.id).update({nombre : (tentative.tentative.nombre+1) , expiredAt: new Date(new Date().setHours(4)).toISOString()});
+
 						res.status(401).send({
 							error: true,
 							message: "Votre Email/Password est erroné"
@@ -100,14 +107,14 @@ exports.login = async (req, res) => {
 					}
 				});
 			} else {
+
+				//update tentative (nombre =  (tentative.tentative.nombre+1 et expiredAt(new Date() + 1h )))
+				let updateTentative = await db.collection("tentative").doc(tentative.id).update({nombre : (tentative.tentative.nombre+1), expiredAt: new Date(new Date().setHours(4)).toISOString()});
+
 				res.status(401).send({
 					error: true,
 					message: "Votre Email/Password est erroné"
 				});
-				// res.status(409).send({
-				// 	error: true,
-				// 	message: "Trop de tentative sur l'email "+data.Email
-				// });
 			}
 
 		}
