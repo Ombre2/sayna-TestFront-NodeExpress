@@ -87,7 +87,7 @@ exports.login = async (req, res) => {
 						console.log("tentative.id =>", tentative.id)
 
 						//update tentative (nombre = 0 )
-						let updateTentative = await db.collection("tentative").doc(tentative.id).update({nombre : 0});
+						let updateTentative = await db.collection("tentatives").doc(tentative.id).update({nombre : 0});
 
 						res.status(200).send({
 							error: false,
@@ -100,7 +100,7 @@ exports.login = async (req, res) => {
 						});
 					} else {
 						//update tentative (nombre =  (tentative.tentative.nombre+1 et expiredAt(new Date() + 1h )))
-						let updateTentative = await db.collection("tentative").doc(tentative.id).update({nombre : (tentative.tentative.nombre+1) , expiredAt: new Date(new Date().setHours(4)).toISOString()});
+						let updateTentative = await db.collection("tentatives").doc(tentative.id).update({nombre : (tentative.tentative.nombre+1) , expiredAt: new Date(new Date().setHours(4)).toISOString()});
 
 						res.status(401).send({
 							error: true,
@@ -111,7 +111,7 @@ exports.login = async (req, res) => {
 			} else {
 
 				//update tentative (nombre =  (tentative.tentative.nombre+1 et expiredAt(new Date() + 1h )))
-				let updateTentative = await db.collection("tentative").doc(tentative.id).update({nombre : (tentative.tentative.nombre+1), expiredAt: new Date(new Date().setHours(4)).toISOString()});
+				let updateTentative = await db.collection("tentatives").doc(tentative.id).update({nombre : (tentative.tentative.nombre+1), expiredAt: new Date(new Date().setHours(4)).toISOString()});
 
 				res.status(401).send({
 					error: true,
