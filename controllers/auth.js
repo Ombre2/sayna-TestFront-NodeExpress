@@ -37,7 +37,7 @@ exports.login = async (req, res) => {
 			let data = [];
 			let idUser = "";
 			await db.collection("users")
-				.where('Email', '==', datas.Email)
+				.where('Email', '==', datas.Email) 
 				.get().then((querySnapshot) => {
 					querySnapshot.forEach((doc) => {
 						data.push(doc.data());
