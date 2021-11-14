@@ -122,7 +122,6 @@ exports.register = async (req, res) => {
 		.get().then((querySnapshot) => {
 			querySnapshot.forEach((doc) => {
 				data.push(doc.data());
-				// console.log(doc.id, ' => ', doc.data());
 			})
 		});
 	if (data.length >= 1) {
@@ -133,6 +132,7 @@ exports.register = async (req, res) => {
 		return;
 	}
 
+	//criptage de mot de passe avec bcrypt
 	bcrypt.genSalt(saltRounds, function (err, salt) {
 		bcrypt.hash(req.body.Password, salt, async function (err, hash) {
 			let register = {
@@ -142,17 +142,19 @@ exports.register = async (req, res) => {
 				Password: hash,
 				date_naissance: req.body.date_naissance,
 				sexe: req.body.sexe,
+			    createdAt : new Date()
 			}
 			try {
 				// Add a new document with a generated id.
 				const result = await db.collection('users').add(register);
 
+				//creation de access_token
 				const token_access = jwt.sign({
 					id: result.id,
 					email: req.body.Email,
 				}, SECRET_ACCESS_TOKEN)
 
-
+				//creation de refresh_token
 				const token_refresh = jwt.sign({
 					id: result.id,
 					email: req.body.Email,
@@ -163,7 +165,7 @@ exports.register = async (req, res) => {
 
 				res.status(200).send({
 					error: false,
-					message: "L\'utilisateur a été authentifié avec succèes",
+					message: "L\'utilisateur a été authentifié avec succès",
 					token: {
 						'token': token_access,
 						'refresh-token': token_refresh,
