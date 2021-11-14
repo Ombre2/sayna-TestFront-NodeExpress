@@ -84,6 +84,8 @@ exports.login = async (req, res) => {
 							await db.collection('tokens').add({ userId: idUser, token: token_access, refresh_token: token_refresh, createdAt : new Date().toISOString() });
 						}
 
+						console.log("tentative.id =>", tentative.id)
+
 						//update tentative (nombre = 0 )
 						let updateTentative = await db.collection("tentative").doc(tentative.id).update({nombre : 0});
 
