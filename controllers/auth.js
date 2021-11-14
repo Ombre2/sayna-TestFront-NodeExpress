@@ -63,7 +63,7 @@ exports.login = async (req, res) => {
 							email: data.Email,
 						}, SECRET_REFRESH_TOKEN,{
 					        expiresIn: "2h",
-					    })
+					    })  
 
 						let tokens = [];
 						//Tester si l'utilisateur a déjà un token dans le BD
@@ -91,7 +91,7 @@ exports.login = async (req, res) => {
 
 						res.status(200).send({
 							error: false,
-							message: "L\'utilisateur a été authentifié avec succès",
+							message: "L\'utilisateur a été authentifié avec succèes",
 							token: {
 								'token': token_access,
 								'refresh-token': token_refresh,
