@@ -30,7 +30,7 @@ exports.login = async (req, res) => {
 		if(tentative.tentative.nombre > 3 && (new Date(tentative.tentative.expiredAt).getTime() < new Date().getTime())){
 			res.status(409).send({
 				error: true,
-				message: "Trop de tentative sur l'email "+data.Email+" - Veillez pantientez dans 1h"
+				message: "Trop de tentative sur l'email " + data.Email + " - Veillez pantientez dans 1h"
 			});
 		 	// res.send({resultat: (tentative.tentative.nombre > 3 && new Date(tentative.tentative.expiredAt).getTime() < new Date().getTime()) });
 		}else{
@@ -89,7 +89,7 @@ exports.login = async (req, res) => {
 
 						res.status(200).send({
 							error: false,
-							message: "L\'utilisateur a été authentifié avec succèes",
+							message: "L\'utilisateur a été authentifié avec succès",
 							token: {
 								'token': token_access,
 								'refresh-token': token_refresh,
