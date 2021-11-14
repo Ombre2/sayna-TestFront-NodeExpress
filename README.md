@@ -22,4 +22,10 @@ Si vous voulez le tester en ligne, voici tous les liens disponnible sur le serve
   <li><b>Method DELETE</b> https://boiling-dusk-66702.herokuapp.com/api/users/:token</li>
 </u>
 
+<h1>Compte déjà existant dans le BDD firebase</h1>
+<ul>
+  <li>Email: johnylegenie@gmail.com</li>
+  <li>Mdp: johnylegenie</li>
+</ul>
+
 
