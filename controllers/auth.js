@@ -18,81 +18,96 @@ exports.login = async (req, res) => {
 		return;
 	}
 	try {
-		let data = [];
-		let idUser = "";
-		await db.collection("users")
-			.where('Email', '==', datas.Email)
-			.get().then((querySnapshot) => {
+		//Prend le nombre de tentative d'un email
+		let tentative = {};
+		await db.collection('tentatives').where('Email', '==', datas.Email)
+			.get()
+			.then((querySnapshot) => {
 				querySnapshot.forEach((doc) => {
-					data.push(doc.data());
-					idUser = doc.id;
+					tentative = {id: doc.id, tentative: doc.data()};
 				})
-			});
-		if (data.length == 1) {
-			bcrypt.compare(datas.Password, data[0].Password, async (err, result) => {
-				if (result) {
+			})
+		console.log("TEST =>",(new Date(tentative.tentative.expiredAt).toISOString() > new Date().toISOString()))
+		if(tentative.tentative.nombre > 3 && (new Date(tentative.tentative.expiredAt).toISOString() > new Date().toISOString())){
 
-					//creation de access_token
-					const token_access = jwt.sign({
-						id: idUser,
-						email: data.Email,
-					}, SECRET_ACCESS_TOKEN,{
-				        expiresIn: "2h",
-				    })
+		}else{
+			let data = [];
+			let idUser = "";
+			await db.collection("users")
+				.where('Email', '==', datas.Email)
+				.get().then((querySnapshot) => {
+					querySnapshot.forEach((doc) => {
+						data.push(doc.data());
+						idUser = doc.id;
+					})
+				});
+			if (data.length == 1) {
 
-					//creation de refresh_token
-					const token_refresh = jwt.sign({
-						id: idUser,
-						email: data.Email,
-					}, SECRET_REFRESH_TOKEN,{
-				        expiresIn: "2h",
-				    })
+				bcrypt.compare(datas.Password, data[0].Password, async (err, result) => {
+					if (result) {
 
-					let tokens = [];
-					//Tester si l'utilisateur a déjà un token dans le BD
-					await db.collection('tokens').where('userId', '==', idUser)
-						.get()
-						.then((querySnapshot) => {
-							querySnapshot.forEach((doc) => {
-								tokens.push({ id: doc.id, data: doc.data() });
+						//creation de access_token
+						const token_access = jwt.sign({
+							id: idUser,
+							email: data.Email,
+						}, SECRET_ACCESS_TOKEN,{
+					        expiresIn: "2h",
+					    })
+
+						//creation de refresh_token
+						const token_refresh = jwt.sign({
+							id: idUser,
+							email: data.Email,
+						}, SECRET_REFRESH_TOKEN,{
+					        expiresIn: "2h",
+					    })
+
+						let tokens = [];
+						//Tester si l'utilisateur a déjà un token dans le BD
+						await db.collection('tokens').where('userId', '==', idUser)
+							.get()
+							.then((querySnapshot) => {
+								querySnapshot.forEach((doc) => {
+									tokens.push({ id: doc.id, data: doc.data() });
+								})
 							})
-						})
 
 
-					if (tokens.length >= 1) {
-						//Update token
-						await db.collection('tokens').doc(tokens[0].id).update({ token: token_access, refresh_token: token_refresh });
-					} else {
-						//creer colllection pour le token avec IdUser et token
-						await db.collection('tokens').add({ userId: idUser, token: token_access, refresh_token: token_refresh });
-					}
-					res.status(200).send({
-						error: false,
-						message: "L\'utilisateur a été authentifié avec succèes",
-						token: {
-							'token': token_access,
-							'refresh-token': token_refresh,
-							'createdAt': new Date()
+						if (tokens.length >= 1) {
+							//Update token
+							await db.collection('tokens').doc(tokens[0].id).update({ token: token_access, refresh_token: token_refresh, createdAt : new Date().toISOString() });
+						} else {
+							//creer colllection pour le token avec IdUser et token
+							await db.collection('tokens').add({ userId: idUser, token: token_access, refresh_token: token_refresh, createdAt : new Date().toISOString() });
 						}
-					});
-				} else {
-					res.status(401).send({
-						error: true,
-						message: "Votre Email/Password est erroné"
-					});
-				}
-			});
-		} else {
-			res.status(401).send({
-				error: true,
-				message: "Votre Email/Password est erroné"
-			});
-			// res.status(409).send({
-			// 	error: true,
-			// 	message: "Trop de tentative sur l'email "+data.Email
-			// });
-		}
+						res.status(200).send({
+							error: false,
+							message: "L\'utilisateur a été authentifié avec succèes",
+							token: {
+								'token': token_access,
+								'refresh-token': token_refresh,
+								'createdAt':  new Date().toISOString()
+							}
+						});
+					} else {
+						res.status(401).send({
+							error: true,
+							message: "Votre Email/Password est erroné"
+						});
+					}
+				});
+			} else {
+				res.status(401).send({
+					error: true,
+					message: "Votre Email/Password est erroné"
+				});
+				// res.status(409).send({
+				// 	error: true,
+				// 	message: "Trop de tentative sur l'email "+data.Email
+				// });
+			}
 
+		}
 	} catch (e) {
 		res.status(500).send({
 			error: true,
@@ -171,7 +186,10 @@ exports.register = async (req, res) => {
 				})
 
 				//creer colllection pour le token avec IdUser et token
-				const addToken = await db.collection('tokens').add({ userId: result.id, token: token_access, refresh_token: token_refresh });
+				const addToken = await db.collection('tokens').add({ userId: result.id, token: token_access, refresh_token: token_refresh,createdAt : new Date().toISOString() });
+
+				//creer collection tentative login avec conditiion (Tentive +1 si le login est érroné)
+				const addTentative = await db.collection('tentatives').add({ userId: result.id, email: req.body.Email, nombre: 0 , expiredAt: new Date().toISOString() });
 
 				res.status(200).send({
 					error: false,
@@ -179,7 +197,7 @@ exports.register = async (req, res) => {
 					token: {
 						'token': token_access,
 						'refresh-token': token_refresh,
-						'createdAt': new Date()
+						'createdAt':  new Date().toISOString()
 					}
 				});
 			} catch (e) {
