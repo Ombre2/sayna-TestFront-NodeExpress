@@ -7,7 +7,7 @@ cd <b><i>sayna-TestFront-NodeExpress</i></b>
 
 Après executer <b> npm i</b> 
 
-Et si vous avez l'installation executer la commande <i>npm start</i>
+Et si vous avez fini l'installation,executer la commande <i>npm start</i>
 
 Si vous voulez le tester en ligne, voici tous les liens disponnible sur le serveur <b><i>heroku</i></b> https://boiling-dusk-66702.herokuapp.com
 
