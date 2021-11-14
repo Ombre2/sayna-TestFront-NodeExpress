@@ -27,7 +27,8 @@ exports.login = async (req, res) => {
 					tentative = {id: doc.id, tentative: doc.data()};
 				})
 			})
-		if(tentative.tentative.nombre > 3 && (new Date(tentative.tentative.expiredAt).getTime() < new Date().getTime())){
+
+		if(tentative.tentative.nombre?0 > 3 && ((new Date(tentative.tentative.expiredAt).getTime())()?new Date().getTime() < (new Date().getTime()))){
 			res.status(409).send({
 				error: true,
 				message: "Trop de tentative sur l'email " + datas.Email + " - Veillez pantientez dans 1h"
